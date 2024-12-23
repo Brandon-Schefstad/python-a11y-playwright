@@ -1,7 +1,7 @@
 async function axeData(params) {
     const obj = JSON.parse(params);
     await injectAxeScript();
-    var results = await runAxe()
+    var results = await runAxe(obj.ignoreCodes)
     results.id = 'id_' + (Date.now().toString(36) + Math.random().toString(36).substr(2, 5));
     results.title = obj.pageTitle == null ? document.title : obj.pageTitle;
     results.dimension = window.innerWidth + ' X ' + window.innerHeight;
@@ -76,12 +76,20 @@ function getFormattedDate() {
     return formattedDate;
 }
 
-function runAxe() {
+function runAxe(ignoreCodes) {
+    ignoreCodes.forEach((code) => {
+        try {
+            document.querySelector(code).remove()
+        }
+        catch {
+        }
+    })
     return new Promise(function (resolve, reject) {
+        // document.querySelector('.ignore').remove()
         axe.run(document, {
-            runOnly: {type: 'tag', values: ['wcag2a', 'wcag2aa', 'section508']},
-            resultTypes: ['violations', 'incomplete', 'inapplicable'],
-            rules: { 'accesskeys': { enabled: false } },
+            runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'section508'] },
+            resultTypes: ['violations', 'incomplete'],
+            rules: { 'accesskeys': { enabled: false }, 'aria-hidden-focus': { enabled: false } },
             reporter: 'v2'
         }).then(results => resolve(results))
     });

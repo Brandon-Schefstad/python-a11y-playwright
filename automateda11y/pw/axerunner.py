@@ -8,12 +8,16 @@ from automateda11y.pw.util.a11y import A11y
 
 class AxeRunner:
 
-    def __init__(self, page):
+    def __init__(self, page, params=None):
         self.a11y = A11y(page)
         self.params = Params()
 
     def set_page_title(self, page_title):
         self.params.set_page_title(page_title)
+        return self
+
+    def set_ignore_codes(self, ignore_codes):
+        self.params.set_ignore_codes(ignore_codes)
         return self
 
     def execute(self):

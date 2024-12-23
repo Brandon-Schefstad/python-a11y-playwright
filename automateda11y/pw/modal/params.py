@@ -2,8 +2,8 @@ import json
 
 
 class Params:
-    def __init__(self):
-        self.ignoreCodes = []
+    def __init__(self, ignoreCodes=None):
+        self.ignoreCodes = ['.ignore']
         self.standard = "WCAG2AA"
         self.pageTitle = None
 
