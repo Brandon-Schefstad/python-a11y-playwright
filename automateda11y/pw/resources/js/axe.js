@@ -77,18 +77,25 @@ function getFormattedDate() {
 }
 
 function runAxe(ignoreCodes) {
+
+    // Optional other method - add an ignore_code in params.py to remove a particular classname from the document.
     ignoreCodes.forEach((code) => {
         try {
-            document.querySelector(code).remove()
+            document.querySelector(code).outerHTML = document.querySelector(code).outerHTML
+                .replaceAll(/{% [a-z]* [a-z]* %}/g, '')
+                .replaceAll(/{% [a-z]* [a-z]*_[a-z]* %}/g, '')
+                .replaceAll(/{% [a-z]* [a-z]*_[a-z]*_[a-z]* %}/g, '')
+                .replaceAll(/{% [a-z]* [a-z]*_[a-z]*_[a-z]*_[a-z]* %}/g, '')
+            console.log(document.querySelector(code).outerHTML)
         }
         catch {
         }
     })
+
     return new Promise(function (resolve, reject) {
-        // document.querySelector('.ignore').remove()
         axe.run(document, {
             runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'section508'] },
-            resultTypes: ['violations', 'incomplete'],
+            resultTypes: ['violations', 'incomplete', 'inapplicable'],
             rules: { 'accesskeys': { enabled: false }, 'aria-hidden-focus': { enabled: false } },
             reporter: 'v2'
         }).then(results => resolve(results))
