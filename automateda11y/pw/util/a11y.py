@@ -25,13 +25,20 @@ class A11y:
             raise Exception(
                 "Reports path is not set, 'Settings.report_dir = <report_path>' is mandate"
             )
+        
         self.page.wait_for_load_state("domcontentloaded")
+
         js_text = Path(
             root_dir() + "/resources/js/", engine.name.lower() + ".js"
         ).read_text()
         self.page.evaluate("async (js)=> await window.eval(js)", js_text)
-        print("PARAMS TO JSON")
-        print(params.to_json())
+
+        #! Adding console.log() output
+        def print_args(msg):
+            for arg in msg.args:
+                print(arg.json_value())
+        self.page.on("console", print_args)
+        
         data = (
             self.page.evaluate(
                 "async (param) => await axeData(param)", params.to_json()
@@ -52,4 +59,5 @@ class A11y:
         os.makedirs(os.path.dirname(file_name), exist_ok=True)
         with open(file_name, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
+        
         return data
