@@ -96,7 +96,7 @@ function runAxe(ignoreCodes) {
         axe.run(document, {
             runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'section508'] },
             resultTypes: ['violations', 'incomplete', 'inapplicable'],
-            rules: { 'accesskeys': { enabled: false }, 'aria-hidden-focus': { enabled: false } },
+            rules: { 'accesskeys': { enabled: false }},
             reporter: 'v2'
         }).then(results => resolve(results))
     });
